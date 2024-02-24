@@ -3,6 +3,7 @@ import cvzone
 from camera_capture import CameraCapture
 from hand_detection import HandDetection
 from image_processor import load_image
+import numpy as np
 
 
 class Game:
@@ -36,11 +37,19 @@ class Game:
             #check for hands and add paddle
             if hands: 
                 for hand in hands:
+
+                    #align the position of the paddle with hand
+                    x, y, w, h = hand['bbox']
+                    h1, w1, _ = self.imgPad1.shape
+                    y_hand = y - h1//2 
+                    y_hand = np.clip (y1, 20, 415)
+
+
                     if hand['type'] == "Left":
-                        frameBg = cvzone.overlayPNG(frameBg, self.imgPad1, (54,200))
+                        frameBg = cvzone.overlayPNG(frameBg, self.imgPad1, (54,y_hand))
 
                     if hand['type'] == "Right":
-                        frameBg = cvzone.overlayPNG(frameBg, self.imgPad2, (1190,200))
+                        frameBg = cvzone.overlayPNG(frameBg, self.imgPad2, (1190,y_hand))
 
             #add ball to frame 
             frameBg = cvzone.overlayPNG(frameBg, self.imgBall, (615,200))
