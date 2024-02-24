@@ -42,7 +42,7 @@ class Game:
                     x, y, w, h = hand['bbox']
                     h1, w1, _ = self.imgPad1.shape
                     y_hand = y - h1//2 
-                    y_hand = np.clip (y1, 20, 415)
+                    y_hand = np.clip (y_hand, 20, 415)
 
 
                     if hand['type'] == "Left":
