@@ -1,1 +1,35 @@
+# Exclude Mac OS attribute files that may appear in Unix-like systems
+._*
+
+# Exclude Python bytecode, optimized files, and dynamically linked libraries
 __pycache__/
+*.py[cod]
+*$py.class
+
+# Exclude files and directories related to Python distribution and packaging
+.Python
+develop-eggs/
+eggs/
+.eggs/
+sdist/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+
+# Exclude build directories commonly used for compiled Python extensions and package distributions
+build/
+dist/
+
+# Exclude pip log and temporary directories
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Exclude Jupyter Notebook checkpoint directories
+.ipynb_checkpoints
+
+# Exclude IPython profile and configuration files
+profile_default/
+ipython_config.py
+
+# Exclude pyenv version file, typically used to specify a Python version for a particular project
+.python-version
