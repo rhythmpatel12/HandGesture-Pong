@@ -1,7 +1,7 @@
 import pygame
 import sys
 import numpy as np
-from entities import Ball, Paddle, HUD
+from entities import Ball, Paddle, HUD, FlashEffect
 from hand_detection import HandDetection
 
 class Game:
@@ -17,7 +17,7 @@ class Game:
         self.ball = Ball(self.screen_width, self.screen_height)
         self.hand_detector = HandDetection(detection_confidence=0.8, max_hands=1)
         self.hud = HUD(self.screen_width, self.screen_height)
-
+        self.flash_effect = FlashEffect(self.screen_width, self.screen_height)
 
     def run(self):
         clock = pygame.time.Clock()
@@ -43,6 +43,8 @@ class Game:
                 self.paddle.draw(self.screen, paddle_y)
                  # Update game entities...
                 point = self.ball.move(self.paddle)  # Move the ball and check for collisions
+                if point == -1: 
+                    self.flash_effect.trigger()
                 score += point
 
            
@@ -50,6 +52,7 @@ class Game:
             hand_present = len(hands) > 0
             self.ball.draw(self.screen)
             self.hud.draw(self.screen, score=score, hand_present=hand_present)
+            self.flash_effect.update_and_draw(self.screen)
 
             pygame.display.flip()
             clock.tick(60)  # FPS

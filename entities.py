@@ -1,5 +1,31 @@
 import pygame
 
+class FlashEffect:
+    def __init__(self, screen_width, screen_height):
+        self.screen_width = screen_width
+        self.screen_height = screen_height
+        self.active = False
+        self.duration = 2  # Duration in frames
+        self.counter = 0
+        self.color = (255, 0, 0, 32)  # Semi-transparent red (RGBA)
+
+    def trigger(self):
+        self.active = True
+        self.counter = self.duration
+
+    def update_and_draw(self, screen):
+        if self.active:
+            # Create a semi-transparent surface
+            flash_surface = pygame.Surface((self.screen_width, self.screen_height), pygame.SRCALPHA)
+            flash_surface.fill(self.color)  # Fill with the RGBA color
+            screen.blit(flash_surface, (0, 0))
+
+            # Countdown to deactivate the effect
+            self.counter -= 1
+            if self.counter <= 0:
+                self.active = False
+
+
 class Paddle:
     def __init__(self, screen_width, screen_height):
         self.screen_width = screen_width
@@ -34,17 +60,20 @@ class Ball:
         # Ball collision with the left side
         if self.x - self.radius <= 0:
             self.speed_x *= -1  # Bounce off the left side
+            self.x += 10 #displace ball 
             return 0
         
         # Ball collision with the paddle on the right
         if self.x + 2*self.radius >= paddle.x and self.y - self.radius >= paddle.y and self.y + self.radius <= paddle.y + paddle.height:
             self.speed_x *= -1  # Reverse direction if it hits the paddle
+            self.x -= 20 #displace ball 
             self.speed_x -= 1 #increase speed on successful hit
             return 1
         
         #Ball collision with the right side (missed paddle)
-        if self.x + 2* self.radius >= 1280:
+        if self.x + 2* self.radius >= 1270:
             self.speed_x *= -1
+            self.x -= 20 #displace ball 
             self.speed_x += 1 #decrease speed on collision
             return -1
 
