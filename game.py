@@ -21,6 +21,7 @@ class Game:
 
     def run(self):
         clock = pygame.time.Clock()
+        score = 0
         while True:
 
             hands, _ = self.hand_detector.get_hands()
@@ -41,13 +42,14 @@ class Game:
                 paddle_y = np.clip(paddle_y, 5, 400)
                 self.paddle.draw(self.screen, paddle_y)
                  # Update game entities...
-                self.ball.move(self.paddle)  # Move the ball and check for collisions
+                point = self.ball.move(self.paddle)  # Move the ball and check for collisions
+                score += point
 
            
 
             hand_present = len(hands) > 0
             self.ball.draw(self.screen)
-            self.hud.draw(self.screen, score=2, hand_present=hand_present)
+            self.hud.draw(self.screen, score=score, hand_present=hand_present)
 
             pygame.display.flip()
             clock.tick(60)  # FPS

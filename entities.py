@@ -29,20 +29,31 @@ class Ball:
         # Reverse the vertical direction of the ball if it hits the top or bottom edge
         if self.y - self.radius <= 0 or self.y + self.radius >= 530:
             self.speed_y *= -1
+            return 0
 
         # Ball collision with the left side
         if self.x - self.radius <= 0:
             self.speed_x *= -1  # Bounce off the left side
+            return 0
         
         # Ball collision with the paddle on the right
         if self.x + 2*self.radius >= paddle.x and self.y - self.radius >= paddle.y and self.y + self.radius <= paddle.y + paddle.height:
             self.speed_x *= -1  # Reverse direction if it hits the paddle
+            return 1
+        
+        #Ball collision with the right side (missed paddle)
+        if self.x + 2* self.radius >= 1280:
+            self.speed_x *= -1
+            return -1
+
+        return 0 #default
 
         
     def move(self, paddle):
         self.x += self.speed_x
         self.y += self.speed_y
-        self.check_collision(paddle)
+        return self.check_collision(paddle)
+        
     
     def draw(self, screen):
         pygame.draw.ellipse(screen, self.color, (self.x, self.y, 2*self.radius, 2*self.radius))
