@@ -64,7 +64,7 @@ class Ball:
             return 0
         
         # Ball collision with the paddle on the right
-        if self.x + 2*self.radius >= paddle.x and self.y - self.radius >= paddle.y and self.y + self.radius <= paddle.y + paddle.height:
+        if self.x + 2*self.radius >= paddle.x and self.y >= paddle.y and self.y + self.radius <= paddle.y + paddle.height:
             self.speed_x *= -1  # Reverse direction if it hits the paddle
             self.x -= 20 #displace ball 
             self.speed_x -= 1 #increase speed on successful hit
