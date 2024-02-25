@@ -82,3 +82,6 @@ class HUD:
         # Draw a green dot if a hand is present
         if hand_present:
             pygame.draw.circle(screen, self.dot_color, (self.screen_width - 30, self.screen_height - self.hud_height // 2), self.dot_radius)
+        else:
+            pause_message = self.font.render(f"No hand detected. Game Paused.", True, (255, 255, 255))
+            screen.blit(pause_message, (450, self.screen_height - self.hud_height + 40))
