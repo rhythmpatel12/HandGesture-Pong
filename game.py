@@ -40,6 +40,10 @@ class Game:
                 paddle_y = y + h // 2 - self.paddle.height // 2
                 paddle_y = np.clip(paddle_y, 5, 400)
                 self.paddle.draw(self.screen, paddle_y)
+                 # Update game entities...
+                self.ball.move(self.paddle)  # Move the ball and check for collisions
+
+           
 
             hand_present = len(hands) > 0
             self.ball.draw(self.screen)

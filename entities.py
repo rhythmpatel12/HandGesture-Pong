@@ -6,19 +6,47 @@ class Paddle:
         self.screen_height = screen_height
         self.width, self.height = 10, 140
         self.color = (200, 200, 200)
+        self.x = self.screen_width - 20  # Initialize the x position
+        self.y = self.screen_height / 2 - self.height / 2  # Initialize the y position to start in the middle
 
     def draw(self, screen, y):
-        self.position = pygame.Rect(self.screen_width - 20, y, self.width, self.height)
+        self.y = y  # Update the y position each time the paddle is drawn
+        self.position = pygame.Rect(self.x, self.y, self.width, self.height)
         pygame.draw.rect(screen, self.color, self.position)
 
 class Ball:
     def __init__(self, screen_width, screen_height):
+        self.screen_width = screen_width
+        self.screen_height = screen_height
         self.radius = 15
-        self.position = pygame.Rect(screen_width / 2 - 15, screen_height / 2 - 15, self.radius * 2, self.radius * 2)
-        self.color = (255 , 69 , 0)
+        self.x = screen_width / 2 - self.radius
+        self.y = screen_height / 2 - self.radius
+        self.color = (255, 69, 0)
+        self.speed_x = 7  # Speed of the ball in the x direction
+        self.speed_y = 7  # Speed of the ball in the y direction
 
+    def check_collision(self, paddle):
+        # Reverse the vertical direction of the ball if it hits the top or bottom edge
+        if self.y - self.radius <= 0 or self.y + self.radius >= 530:
+            self.speed_y *= -1
+
+        # Ball collision with the left side
+        if self.x - self.radius <= 0:
+            self.speed_x *= -1  # Bounce off the left side
+        
+        # Ball collision with the paddle on the right
+        if self.x + 2*self.radius >= paddle.x and self.y - self.radius >= paddle.y and self.y + self.radius <= paddle.y + paddle.height:
+            self.speed_x *= -1  # Reverse direction if it hits the paddle
+
+        
+    def move(self, paddle):
+        self.x += self.speed_x
+        self.y += self.speed_y
+        self.check_collision(paddle)
+    
     def draw(self, screen):
-        pygame.draw.ellipse(screen, self.color, self.position)
+        pygame.draw.ellipse(screen, self.color, (self.x, self.y, 2*self.radius, 2*self.radius))
+
 
 class HUD:
     def __init__(self, screen_width, screen_height):
