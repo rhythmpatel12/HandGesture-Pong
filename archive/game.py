@@ -4,6 +4,7 @@ from camera_capture import CameraCapture
 from hand_detection import HandDetection
 from image_processor import load_image
 import numpy as np
+import time  # Import time module
 
 class Game:
     def __init__(self):
@@ -11,8 +12,9 @@ class Game:
         self.handDetection = HandDetection(detectionCon=0.8, maxHands=2)
         self.load_resources()
         self.ball_position = [615, 200]
-        self.speedX = 10
-        self.speedY = 10
+        self.speedX = 200  # Speed in pixels per second
+        self.speedY = 200 # Speed in pixels per second
+        self.last_time = time.time()  # Initialize last frame time
 
     def load_resources(self):
         self.imgBg = load_image("resources/Background.png")
@@ -43,14 +45,20 @@ class Game:
             else:
                 self.ball_position[0] -= 15
 
-    def update_ball_position(self):
+    def update_ball_position(self, delta_time):
         if self.ball_position[1] >= 500 or self.ball_position[1] <= 15:
             self.speedY *= -1
-        self.ball_position[0] += self.speedX
-        self.ball_position[1] += self.speedY
+
+        # Adjust ball position based on speed and delta time
+        self.ball_position[0] += self.speedX * delta_time
+        self.ball_position[1] += self.speedY * delta_time
 
     def run(self):
         while True:
+            current_time = time.time()
+            delta_time = current_time - self.last_time  # Calculate delta time
+            self.last_time = current_time  # Update the last time
+
             frame = self.camera.read()
             if frame is None:
                 continue
@@ -61,8 +69,8 @@ class Game:
             if hands:
                 frameBg = self.handle_paddle_movement(hands, frameBg)
 
-            self.update_ball_position()
-            frameBg = cvzone.overlayPNG(frameBg, self.imgBall, self.ball_position)
+            self.update_ball_position(delta_time)  # Pass delta time to the update function
+            frameBg = cvzone.overlayPNG(frameBg, self.imgBall, (int(self.ball_position[0]), int(self.ball_position[1])))
 
             cv2.imshow('Game', frameBg)
             if cv2.waitKey(1) & 0xFF == ord('q'):
