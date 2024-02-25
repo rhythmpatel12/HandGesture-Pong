@@ -39,11 +39,13 @@ class Ball:
         # Ball collision with the paddle on the right
         if self.x + 2*self.radius >= paddle.x and self.y - self.radius >= paddle.y and self.y + self.radius <= paddle.y + paddle.height:
             self.speed_x *= -1  # Reverse direction if it hits the paddle
+            self.speed_x -= 1 #increase speed on successful hit
             return 1
         
         #Ball collision with the right side (missed paddle)
         if self.x + 2* self.radius >= 1280:
             self.speed_x *= -1
+            self.speed_x += 1 #decrease speed on collision
             return -1
 
         return 0 #default
