@@ -1,8 +1,8 @@
 import cv2
 import cvzone
-from camera_capture import CameraCapture
+from archive.camera_capture import CameraCapture
 from hand_detection import HandDetection
-from image_processor import load_image
+from archive.image_processor import load_image
 import numpy as np
 import time  # Import time module
 
