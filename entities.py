@@ -1,5 +1,18 @@
 import pygame
 
+class SoundEffect:
+    def __init__(self):
+        pygame.mixer.init()
+        self.sounds = {
+            'paddle_hit': pygame.mixer.Sound('resources/paddle_hit.wav'),
+            'wall_hit': pygame.mixer.Sound('resources/wall_hit.wav'),
+            # Add more sounds as needed
+        }
+
+    def play_sound(self, sound_name):
+        if sound_name in self.sounds:
+            self.sounds[sound_name].play()
+
 class FlashEffect:
     def __init__(self, screen_width, screen_height):
         self.screen_width = screen_width
@@ -41,7 +54,7 @@ class Paddle:
         pygame.draw.rect(screen, self.color, self.position)
 
 class Ball:
-    def __init__(self, screen_width, screen_height):
+    def __init__(self, screen_width, screen_height, sound_effect=None):
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.radius = 15
@@ -50,6 +63,7 @@ class Ball:
         self.color = (255, 69, 0)
         self.speed_x = 7  # Speed of the ball in the x direction
         self.speed_y = 7  # Speed of the ball in the y direction
+        self.sound_effect = sound_effect
 
     def check_collision(self, paddle):
         # Reverse the vertical direction of the ball if it hits the top or bottom edge
@@ -65,6 +79,7 @@ class Ball:
         
         # Ball collision with the paddle on the right
         if self.x + 2*self.radius >= paddle.x and self.y >= paddle.y and self.y + self.radius <= paddle.y + paddle.height:
+            self.sound_effect.play_sound('paddle_hit')
             self.speed_x *= -1  # Reverse direction if it hits the paddle
             self.x -= 20 #displace ball 
             self.speed_x -= 1 #increase speed on successful hit
@@ -72,6 +87,7 @@ class Ball:
         
         #Ball collision with the right side (missed paddle)
         if self.x + 2* self.radius >= 1270:
+            self.sound_effect.play_sound('wall_hit')
             self.speed_x *= -1
             self.x -= 20 #displace ball 
             self.speed_x += 1 #decrease speed on collision

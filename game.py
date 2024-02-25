@@ -1,7 +1,7 @@
 import pygame
 import sys
 import numpy as np
-from entities import Ball, Paddle, HUD, FlashEffect
+from entities import Ball, Paddle, HUD, FlashEffect, SoundEffect
 from hand_detection import HandDetection
 
 class Game:
@@ -13,11 +13,16 @@ class Game:
         pygame.display.set_caption('Pong Game')
         self.bg_color = pygame.Color('grey12')
 
+        self.flash_effect = FlashEffect(self.screen_width, self.screen_height)
+        self.sound_effect = SoundEffect()
+
         self.paddle = Paddle(self.screen_width, self.screen_height)
-        self.ball = Ball(self.screen_width, self.screen_height)
+        self.ball = Ball(self.screen_width, self.screen_height, sound_effect=self.sound_effect)
         self.hand_detector = HandDetection(detection_confidence=0.8, max_hands=1)
         self.hud = HUD(self.screen_width, self.screen_height)
-        self.flash_effect = FlashEffect(self.screen_width, self.screen_height)
+
+
+
 
     def run(self):
         clock = pygame.time.Clock()
