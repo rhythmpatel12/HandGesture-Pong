@@ -1,67 +1,93 @@
 import pygame
 
 class SoundEffect:
+    """
+    Handles loading and playing of sound effects.
+    """
     def __init__(self):
         pygame.mixer.init()
+
+        # Dictionary mapping sound names to Sound objects.
         self.sounds = {
             'paddle_hit': pygame.mixer.Sound('resources/paddle_hit.wav'),
             'wall_hit': pygame.mixer.Sound('resources/wall_hit.wav'),
-            # Add more sounds as needed
         }
 
     def play_sound(self, sound_name):
+        """
+        Plays the specified sound if it exists in the sounds dictionary.
+        """
         if sound_name in self.sounds:
             self.sounds[sound_name].play()
 
 class FlashEffect:
+    """
+    Manages a flash effect on the screen, used to indicate specific game events.
+    """
     def __init__(self, screen_width, screen_height):
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.active = False
-        self.duration = 2  # Duration in frames
+        self.duration = 2  
         self.counter = 0
-        self.color = (255, 0, 0, 32)  # Semi-transparent red (RGBA)
+        self.color = (255, 0, 0, 32)
 
     def trigger(self):
+        """
+        Activates the flash effect.
+        """
         self.active = True
         self.counter = self.duration
 
     def update_and_draw(self, screen):
+        """
+        Updates the effect's state and draws it on the screen if active.
+        """
         if self.active:
-            # Create a semi-transparent surface
             flash_surface = pygame.Surface((self.screen_width, self.screen_height), pygame.SRCALPHA)
-            flash_surface.fill(self.color)  # Fill with the RGBA color
+            flash_surface.fill(self.color)
             screen.blit(flash_surface, (0, 0))
-
-            # Countdown to deactivate the effect
             self.counter -= 1
             if self.counter <= 0:
                 self.active = False
 
 
 class Paddle:
+    """
+    Represents a paddle in the game, handling its drawing and position updates.
+    """
     def __init__(self, screen_width, screen_height):
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.width, self.height = 10, 140
         self.color = (200, 200, 200)
-        self.x = self.screen_width - 20  # Initialize the x position
-        self.y = self.screen_height / 2 - self.height / 2  # Initialize the y position to start in the middle
-
+        #Initialize the x and y position
+        self.x = self.screen_width - 20 
+        self.y = self.screen_height / 2 - self.height / 2
+        #Attributes to track movement speed
         self.last_y = self.y
-        self.movement_speed = 0  # New attribute to track movement speed
+        self.movement_speed = 0  
 
     def update(self, y):
-        self.movement_speed = y - self.last_y  # Calculate movement speed
+        """
+        Updates the paddle's position and calculates its movement speed.
+        """
+        self.movement_speed = y - self.last_y
         self.last_y = y
-        self.y = y  # Update the y position each time the paddle is drawn
+        self.y = y
 
     def draw(self, screen, y):
-        self.y = y  # Update the y position each time the paddle is drawn
+        """
+        Draws the paddle on the screen at its current position.
+        """
+        self.y = y
         self.position = pygame.Rect(self.x, self.y, self.width, self.height)
         pygame.draw.rect(screen, self.color, self.position)
 
 class Ball:
+    """
+    Represents the game ball, managing its movement, drawing, and collision detection.
+    """
     def __init__(self, screen_width, screen_height, sound_effect=None):
         self.screen_width = screen_width
         self.screen_height = screen_height
@@ -69,28 +95,31 @@ class Ball:
         self.x = screen_width / 2 - self.radius
         self.y = screen_height / 2 - self.radius
         self.color = (255, 69, 0)
-        self.speed_x = 7  # Speed of the ball in the x direction
-        self.speed_y = 7  # Speed of the ball in the y direction
-        self.sound_effect = sound_effect
+        self.speed_x = 7  # Horizontal movement speed
+        self.speed_y = 7  # Vertical movement speed
+        self.sound_effect = sound_effect # SoundEffect instance for playing sounds.
 
     def check_collision(self, paddle):
-        # Reverse the vertical direction of the ball if it hits the top or bottom edge
+        """
+        Checks for and handles collisions with the paddle and screen edges, adjusting the ball's direction and speed, and returning a point value based on the collision outcome.
+        """
+        # Reverse the vertical direction of the ball if it hits the top or bottom edge (change direction)
         if self.y - self.radius <= 0 or self.y + self.radius >= 530:
             self.speed_y *= -1
             return 0
 
-        # Ball collision with the left side
+        # Ball collision with the left side (change direction, slight displacement)
         if self.x - self.radius <= 0:
-            self.speed_x *= -1  # Bounce off the left side
-            self.x += 10 #displace ball 
+            self.speed_x *= -1 
+            self.x += 10  
             return 0
         
-        # Ball collision with the paddle on the right
+        # Ball collision with the paddle on the right (change direction, slight displacement, horizontal speedup, impart vertical momentum )
         if self.x + 2*self.radius >= paddle.x and self.y >= paddle.y and self.y + self.radius <= paddle.y + paddle.height:
             self.sound_effect.play_sound('paddle_hit')
-            self.speed_x *= -1  # Reverse direction if it hits the paddle
-            self.x -= 20 #displace ball 
-            self.speed_x -= 1 #increase speed on successful hit
+            self.speed_x *= -1  
+            self.x -= 20 
+            self.speed_x -= 1
 
             # Modify the ball's vertical speed based on the paddle's movement speed
             self.speed_y += paddle.movement_speed * 0.33  # multiplier for gameplay balance
@@ -108,28 +137,40 @@ class Ball:
 
         
     def move(self, paddle):
+        """
+        Updates the ball's position based on its speed and checks for collisions.
+        """
         self.x += self.speed_x
         self.y += self.speed_y
         return self.check_collision(paddle)
         
     
     def draw(self, screen):
+        """
+        Draws the ball on the screen at its current position.
+        """
         pygame.draw.ellipse(screen, self.color, (self.x, self.y, 2*self.radius, 2*self.radius))
 
 
 class HUD:
+    """
+    Represents the Heads-Up Display (HUD), showing game information such as score and hand detection status.
+    """
     def __init__(self, screen_width, screen_height):
         self.font = pygame.font.Font(None, 36)
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.hud_height = 200 
         self.hud_color = pygame.Color('black')
-
-        self.dot_color = pygame.Color('green')  # Color for the hand presence dot
-        self.dot_radius = 10  # Size of the dot
+        # Color and size of camera indicator
+        self.dot_color = pygame.Color('green')  
+        self.dot_radius = 10  
         
 
-    def draw(self, screen, score=0, hand_present=False):  
+    def draw(self, screen, score=0, hand_present=False): 
+        """
+        Draws the HUD on the screen which includes score and camera indication.
+        """ 
         pygame.draw.rect(screen, self.hud_color, (0, 550, self.screen_width, self.hud_height))
         
         # Display score or other information
