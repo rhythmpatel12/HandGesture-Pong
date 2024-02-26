@@ -46,6 +46,10 @@ class Game:
                 paddle_y = y + h // 2 - self.paddle.height // 2
                 paddle_y = np.clip(paddle_y, 5, 400)
                 self.paddle.draw(self.screen, paddle_y)
+
+                # Determine the paddle's new Y position based on input or hand detection
+                self.paddle.update(paddle_y)
+
                  # Update game entities...
                 point = self.ball.move(self.paddle)  # Move the ball and check for collisions
                 if point == -1: 

@@ -48,6 +48,14 @@ class Paddle:
         self.x = self.screen_width - 20  # Initialize the x position
         self.y = self.screen_height / 2 - self.height / 2  # Initialize the y position to start in the middle
 
+        self.last_y = self.y
+        self.movement_speed = 0  # New attribute to track movement speed
+
+    def update(self, y):
+        self.movement_speed = y - self.last_y  # Calculate movement speed
+        self.last_y = y
+        self.y = y  # Update the y position each time the paddle is drawn
+
     def draw(self, screen, y):
         self.y = y  # Update the y position each time the paddle is drawn
         self.position = pygame.Rect(self.x, self.y, self.width, self.height)
@@ -83,6 +91,9 @@ class Ball:
             self.speed_x *= -1  # Reverse direction if it hits the paddle
             self.x -= 20 #displace ball 
             self.speed_x -= 1 #increase speed on successful hit
+
+            # Modify the ball's vertical speed based on the paddle's movement speed
+            self.speed_y += paddle.movement_speed * 0.33  # multiplier for gameplay balance
             return 1
         
         #Ball collision with the right side (missed paddle)
