@@ -96,7 +96,7 @@ class Ball:
         self.x = screen_width / 2 - self.radius
         self.y = screen_height / 2 - self.radius
         self.color = (255, 69, 0)
-        self.speed_x = 10  # Horizontal movement speed
+        self.speed_x = 15  # Horizontal movement speed
         self.speed_y = 0  # Vertical movement speed
         self.sound_effect = sound_effect # SoundEffect instance for playing sounds.
 
@@ -123,7 +123,7 @@ class Ball:
             self.speed_x -= 1
 
             # Modify the ball's vertical speed based on the paddle's movement speed
-            self.speed_y += paddle.movement_speed * 0.2  # multiplier for gameplay balance
+            self.speed_y += paddle.movement_speed * 0.25  # multiplier for gameplay balance
             return 1
         
         #Ball collision with the right side (missed paddle)
@@ -215,8 +215,8 @@ class GravityWell:
         force_y = force * distance_x / effective_distance
 
         # Apply the force to the object's velocity
-        obj.speed_x += 0.5* force_x 
-        obj.speed_y += 0.5* force_y 
+        obj.speed_x += 0.4* force_x 
+        obj.speed_y += 0.4* force_y 
 
     def draw(self, screen):
         # Draw the visual indicator as a circle
