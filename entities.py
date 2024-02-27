@@ -1,4 +1,5 @@
 import pygame
+import math 
 
 class SoundEffect:
     """
@@ -95,8 +96,8 @@ class Ball:
         self.x = screen_width / 2 - self.radius
         self.y = screen_height / 2 - self.radius
         self.color = (255, 69, 0)
-        self.speed_x = 7  # Horizontal movement speed
-        self.speed_y = 7  # Vertical movement speed
+        self.speed_x = 10  # Horizontal movement speed
+        self.speed_y = 0  # Vertical movement speed
         self.sound_effect = sound_effect # SoundEffect instance for playing sounds.
 
     def check_collision(self, paddle):
@@ -122,7 +123,7 @@ class Ball:
             self.speed_x -= 1
 
             # Modify the ball's vertical speed based on the paddle's movement speed
-            self.speed_y += paddle.movement_speed * 0.33  # multiplier for gameplay balance
+            self.speed_y += paddle.movement_speed * 0.2  # multiplier for gameplay balance
             return 1
         
         #Ball collision with the right side (missed paddle)
@@ -184,3 +185,45 @@ class HUD:
         else:
             pause_message = self.font.render(f"No hand detected. Game Paused.", True, (255, 255, 255))
             screen.blit(pause_message, (450, self.screen_height - self.hud_height + 40))
+
+
+class GravityWell:
+    def __init__(self, x, y, strength, size=20, color=(255, 255, 255)):
+        self.x = x
+        self.y = y
+        self.strength = strength
+        self.size = size  # Size of the visual indicator
+        self.color = color  # Color of the visual indicator
+
+    def attract(self, obj):
+        # Calculate the distance between the object and the gravity well
+        distance_x = self.x - obj.x
+        distance_y = self.y - obj.y
+        distance = math.sqrt(distance_x**2 + distance_y**2)
+
+        # Prevent the ball from getting "stuck" by setting a minimum effective distance
+        min_distance = 100  # Adjust as needed for gameplay balance
+        effective_distance = max(distance, min_distance)
+
+        # Adjust the force to give an orbital effect rather than direct attraction
+        # The force is calculated similarly but applied perpendicularly
+        force = self.strength / (effective_distance**2 + 1)  # +1 to avoid division by zero
+
+        # Calculate the direction of the force for a circular orbit
+        # Swap and negate one coordinate to get a perpendicular direction
+        force_x = force * distance_y / effective_distance
+        force_y = force * distance_x / effective_distance
+
+        # Apply the force to the object's velocity
+        obj.speed_x += 0.5* force_x 
+        obj.speed_y += 0.5* force_y 
+
+    def draw(self, screen):
+        # Draw the visual indicator as a circle
+        pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), self.size)
+
+        # Optional: Draw a larger, semi-transparent circle to indicate the area of influence
+        influence_radius = int(math.sqrt(self.strength))  # Example calculation
+        surface = pygame.Surface((influence_radius*2, influence_radius*2), pygame.SRCALPHA)
+        pygame.draw.circle(surface, self.color + (64,), (influence_radius, influence_radius), influence_radius)
+        screen.blit(surface, (self.x - influence_radius, self.y - influence_radius))

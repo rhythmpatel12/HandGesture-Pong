@@ -1,6 +1,6 @@
 import cv2
 import cvzone
-from archive.camera_capture import CameraCapture
+from camera_capture import CameraCapture
 from hand_detection import HandDetection
 from archive.image_processor import load_image
 import numpy as np

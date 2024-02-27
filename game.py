@@ -1,7 +1,8 @@
 import pygame
 import sys
+import random
 import numpy as np
-from entities import Ball, Paddle, HUD, FlashEffect, SoundEffect
+from entities import Ball, Paddle, HUD, FlashEffect, SoundEffect, GravityWell
 from hand_detection import HandDetection
 
 class Game:
@@ -21,7 +22,10 @@ class Game:
         self.hand_detector = HandDetection(detection_confidence=0.8, max_hands=1)
         self.hud = HUD(self.screen_width, self.screen_height)
 
-
+        self.gravity_wells = [
+            GravityWell(random.randint(50, 500), random.randint(50, 500), random.randint(2000,6000), size=random.randint(10, 20)),
+            GravityWell(random.randint(600, 900), random.randint(50, 500), random.randint(2000,6000), size=random.randint(10, 20)),
+            GravityWell(random.randint(900, 1200), random.randint(50, 500), random.randint(2000,6000), size=random.randint(10, 20))]
 
 
     def run(self):
@@ -61,6 +65,11 @@ class Game:
             hand_present = len(hands) > 0
             self.ball.draw(self.screen)
             self.hud.draw(self.screen, score=score, hand_present=hand_present)
+            
+            for well in self.gravity_wells:
+                well.attract(self.ball)
+                well.draw(self.screen)
+
             self.flash_effect.update_and_draw(self.screen)
 
             pygame.display.flip()
