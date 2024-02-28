@@ -1,5 +1,4 @@
 import subprocess
-import cv2
 import sys
 
 def install_requirements():
@@ -10,6 +9,10 @@ def install_requirements():
     except subprocess.CalledProcessError as e:
         print(f"Failed to install requirements. Error: {e}")
         sys.exit(1)
+
+install_requirements()
+
+import cv2
 
 def check_webcam():
     try:
@@ -23,7 +26,6 @@ def check_webcam():
         print(f"Failed to access the webcam. Error: {e}")
         sys.exit(1)
 
-if __name__ == "__main__":
-    install_requirements()
-    check_webcam()
-    print("Setup completed successfully. You're all set to run the game!")
+    
+check_webcam()
+print("Setup completed successfully. You're all set to run the game!")
