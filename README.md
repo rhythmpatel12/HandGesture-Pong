@@ -34,6 +34,7 @@ You would simply need to follow the instructions on screen to play the game.
 When running the game, use ``` Space ``` to start, ``` Esc ``` to end, ``` R ``` to restart, and ``` Q ``` to quit the game. 
 
 Moving the Paddle: Position your hand at different heights within the camera's view to move the paddle up and down. The game uses the FIRST hand it detects as the controller. 
+
 Customizing Gameplay: Feel free to dive into the code to adjust the game's difficulty, obstacle parameters, or ball speed to your liking.
 
 ## Resources 
