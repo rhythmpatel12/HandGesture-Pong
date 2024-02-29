@@ -4,6 +4,7 @@ This README provides all the information you need to get started which includes:
 - Setup instructions
 - Gameplay details
 - Resources used to create this project
+- Demo Video
 
 ## Setup Instructions
 ### Prerequisites
@@ -47,3 +48,5 @@ ChatGPT: Provided guidance on Python best practices, game logic, and problem-sol
 
 [Python PEP 8 Documentation](https://peps.python.org/pep-0008/): The official Python documentation was a go-to resource for best practices, especially regarding Pythonic ways to implement game logic and structure. Python's Official Documentation is an invaluable resource for any Python developer.
 
+## Demo Video
+Check out this demo video for how to install and run the game and overview of some features: [Demo Video](https://youtu.be/1O5bLxqf6l0)
